@@ -8,7 +8,7 @@ fn main() -> MainResult {
     let data: Vec<Vec<char>> = data.lines().map(|l| l.chars().collect()).collect();
     let mut guard = Guard::from_field(data.clone());
     let first_place = guard.position;
-    let mut visited_places = HashSet::new();
+    let mut visited_places = Vec::new();
     let (_, visited_places) = guard.traverse_field(&mut visited_places);
     let mut unique_places: Vec<(Coord, Direction)> = Vec::new();
     for p in visited_places.iter() {
@@ -16,11 +16,10 @@ fn main() -> MainResult {
             unique_places.push(*p);
         }
     }
-    // println!("Visited {} places.", unique_places.len());
+    println!("Visited {} places.", unique_places.len());
 
     // let mut known_loops: Vec<Vec<(Coord, Direction)>> = vec![];
     let mut count = 0;
-    let mut visited_places_in_loop = HashSet::with_capacity(2000);
     for (_i, (pos, visited_direction)) in unique_places.iter().enumerate().skip(1) {
         if *pos == first_place {
             continue;
@@ -38,7 +37,7 @@ fn main() -> MainResult {
         //     .iter()
         //     .filter(|l| l.iter().any(|(kp, kd)| kp == pos))
         //     .collect::<Vec<_>>();
-        let has_loop = guard.check_loop(&mut visited_places_in_loop);
+        let has_loop = guard.check_loop();
         if has_loop {
             count += 1;
             // known_loops.push(new_visited_places);
@@ -129,8 +128,8 @@ impl Guard {
         Some((Coord { x, y }, *direction))
     }
 
-    fn check_loop<'a>(&mut self, visited_places: &'a mut HashSet<(Coord, Direction)>) -> bool {
-        visited_places.clear();
+    fn check_loop(&mut self) -> bool {
+        let mut visited_places = HashSet::<(Coord, Direction)>::new();
         visited_places.insert((self.position, self.facing));
         loop {
             let forward_status = self.move_forward();
@@ -151,14 +150,14 @@ impl Guard {
 
     fn traverse_field<'a>(
         &mut self,
-        visited_places: &'a mut HashSet<(Coord, Direction)>,
-    ) -> (bool, &'a HashSet<(Coord, Direction)>) {
+        visited_places: &'a mut Vec<(Coord, Direction)>,
+    ) -> (bool, &'a Vec<(Coord, Direction)>) {
         visited_places.clear();
-        visited_places.insert((self.position, self.facing));
+        visited_places.push((self.position, self.facing));
         loop {
             let forward_status = self.move_forward();
             for place in forward_status.covered {
-                visited_places.insert((place, self.facing));
+                visited_places.push((place, self.facing));
             }
             match forward_status.stop_reason {
                 StopReason::Outside => return (false, visited_places),
