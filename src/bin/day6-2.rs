@@ -58,7 +58,7 @@ struct Coord {
 }
 
 impl Coord {
-    fn from(pair: &(i32, i32)) -> Self {
+    const fn from(pair: &(i32, i32)) -> Self {
         Coord {
             x: pair.0 as usize,
             y: pair.1 as usize,
@@ -75,7 +75,7 @@ enum Direction {
 }
 
 impl Direction {
-    fn opposite(&self) -> Direction {
+    const fn opposite(&self) -> Direction {
         match self {
             Direction::Up => Direction::Down,
             Direction::Down => Direction::Up,
@@ -84,7 +84,7 @@ impl Direction {
         }
     }
 
-    fn turn_right(&self) -> Direction {
+    const fn turn_right(&self) -> Direction {
         match self {
             Direction::Up => Direction::Right,
             Direction::Down => Direction::Left,
@@ -148,7 +148,7 @@ impl Guard {
     }
 
     fn traverse_field(&mut self) -> (bool, Vec<(Coord, Direction)>) {
-        let mut visited_places = Vec::<(Coord, Direction)>::new();
+        let mut visited_places = Vec::<(Coord, Direction)>::with_capacity(500);
         visited_places.push((self.position, self.facing));
         loop {
             let forward_status = self.move_forward();
@@ -191,8 +191,16 @@ impl Guard {
 
     fn move_forward(&mut self) -> ForwardStatus {
         let mut covered = vec![];
+        let next_pos = self.next_step();
+        let diff = (
+            next_pos.0 as i32 - self.position.x as i32,
+            next_pos.1 - self.position.y as i32,
+        );
         loop {
-            let next_pos = self.next_step();
+            let next_pos = (
+                self.position.x as i32 + diff.0,
+                self.position.y as i32 + diff.1,
+            );
             let next_pos_thing = (next_pos.0 >= 0 && next_pos.1 >= 0)
                 .then(|| {
                     self.field
@@ -222,7 +230,7 @@ impl Guard {
         }
     }
 
-    fn next_step(&self) -> (i32, i32) {
+    const fn next_step(&self) -> (i32, i32) {
         Guard::next_move_from_direction(
             &self.facing,
             &(self.position.x as i32, self.position.y as i32),
@@ -238,7 +246,7 @@ impl Guard {
         }
     }
 
-    fn turn_right(&mut self) {
+    const fn turn_right(&mut self) {
         self.facing = self.facing.turn_right();
     }
 }
