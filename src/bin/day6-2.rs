@@ -1,4 +1,4 @@
-use std::fs;
+use std::{collections::HashSet, fs};
 
 use aoc2024::{get_input_file, MainResult};
 
@@ -19,7 +19,7 @@ fn main() -> MainResult {
 
     // let mut known_loops: Vec<Vec<(Coord, Direction)>> = vec![];
     let mut count = 0;
-    for (i, (pos, visited_direction)) in unique_places.iter().enumerate().skip(1) {
+    for (_i, (pos, visited_direction)) in unique_places.iter().enumerate().skip(1) {
         if *pos == first_place {
             continue;
         }
@@ -36,11 +36,11 @@ fn main() -> MainResult {
         //     .iter()
         //     .filter(|l| l.iter().any(|(kp, kd)| kp == pos))
         //     .collect::<Vec<_>>();
-        let (has_loop, _new_visited_places) = guard.traverse_field();
+        let has_loop = guard.check_loop();
         if has_loop {
             count += 1;
             // known_loops.push(new_visited_places);
-            println!("{i} covered: {count} loops");
+            // println!("{i} covered: {count} loops");
         }
     }
 
@@ -66,7 +66,7 @@ impl Coord {
     }
 }
 
-#[derive(PartialEq, Eq, Debug, Clone, Copy)]
+#[derive(PartialEq, Eq, Debug, Clone, Copy, Hash)]
 enum Direction {
     Up,
     Down,
@@ -127,27 +127,37 @@ impl Guard {
         Some((Coord { x, y }, *direction))
     }
 
+    fn check_loop(&mut self) -> bool {
+        let mut visited_places = HashSet::<(Coord, Direction)>::new();
+        visited_places.insert((self.position, self.facing));
+        loop {
+            let forward_status = self.move_forward();
+            for place in forward_status.covered {
+                if visited_places.contains(&(place, self.facing)) {
+                    return true;
+                }
+                visited_places.insert((place, self.facing));
+            }
+            match forward_status.stop_reason {
+                StopReason::Outside => return false,
+                StopReason::Obstacle => {
+                    self.turn_right();
+                }
+            }
+        }
+    }
+
     fn traverse_field(&mut self) -> (bool, Vec<(Coord, Direction)>) {
         let mut visited_places = Vec::<(Coord, Direction)>::new();
         visited_places.push((self.position, self.facing));
         loop {
-            // println!("starting from {:?}, {:?}", self.position, self.facing);
             let forward_status = self.move_forward();
-            // println!("covered: {}", forward_status.covered.len());
-            // println!("moved to {:?}", self.position);
             for place in forward_status.covered {
-                if visited_places
-                    .iter()
-                    .any(|&vp| vp.1 == self.facing && vp.0 == place)
-                {
-                    return (true, visited_places);
-                }
                 visited_places.push((place, self.facing));
             }
             match forward_status.stop_reason {
                 StopReason::Outside => return (false, visited_places),
                 StopReason::Obstacle => {
-                    // self.print_surrounding();
                     self.turn_right();
                 }
             }
