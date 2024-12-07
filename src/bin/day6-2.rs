@@ -16,11 +16,11 @@ fn main() -> MainResult {
             unique_places.push(*p);
         }
     }
-    println!("Visited {} places.", unique_places.len());
+    // println!("Visited {} places.", unique_places.len());
 
     // let mut known_loops: Vec<Vec<(Coord, Direction)>> = vec![];
     let mut count = 0;
-    let mut visited_places_in_loop = HashSet::new();
+    let mut visited_places_in_loop = HashSet::with_capacity(2000);
     for (_i, (pos, visited_direction)) in unique_places.iter().enumerate().skip(1) {
         if *pos == first_place {
             continue;
@@ -130,6 +130,7 @@ impl Guard {
     }
 
     fn check_loop<'a>(&mut self, visited_places: &'a mut HashSet<(Coord, Direction)>) -> bool {
+        visited_places.clear();
         visited_places.insert((self.position, self.facing));
         loop {
             let forward_status = self.move_forward();
