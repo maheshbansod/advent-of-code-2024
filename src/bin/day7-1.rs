@@ -38,10 +38,8 @@ fn traverse(numbers: &[u64], expected_result: u64) -> bool {
         if numbers.len() == 1 && remaining == numbers[0] {
             return true;
         }
-        if remaining > 0 && numbers.len() >= 2 {
-            if traverse(numbers, remaining) {
-                return true;
-            }
+        if remaining > 0 && numbers.len() >= 2 && traverse(numbers, remaining) {
+            return true;
         }
     }
 
@@ -50,12 +48,10 @@ fn traverse(numbers: &[u64], expected_result: u64) -> bool {
         if numbers.len() == 1 && remaining == numbers[0] {
             return true;
         }
-        if remaining >= 1 && numbers.len() >= 2 {
-            if traverse(numbers, remaining) {
-                return true;
-            }
+        if remaining >= 1 && numbers.len() >= 2 && traverse(numbers, remaining) {
+            return true;
         }
     }
 
-    return false;
+    false
 }

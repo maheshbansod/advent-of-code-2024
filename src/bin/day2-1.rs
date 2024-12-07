@@ -23,10 +23,10 @@ fn main() {
                 return true;
             }
             let second = second.unwrap().parse::<u32>().unwrap();
-            if {
+            let res = {
                 let diff = second.abs_diff(first);
-                diff < 1 || diff > 3
-            } {
+                !(1..=3).contains(&diff)
+            }; if res {
                 return false;
             }
             let direction = get_direction(first, second);
@@ -39,7 +39,7 @@ fn main() {
                     break;
                 }
                 let diff = level.abs_diff(previous_level);
-                if diff < 1 || diff > 3 {
+                if !(1..=3).contains(&diff) {
                     is_safe = false;
                     break;
                 }

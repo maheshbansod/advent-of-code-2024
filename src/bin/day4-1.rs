@@ -24,7 +24,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn count_xmas_at(data: &Vec<Vec<char>>, start_i: usize, start_j: usize) -> usize {
+fn count_xmas_at(data: &[Vec<char>], start_i: usize, start_j: usize) -> usize {
     const WORD: &[char] = &['X', 'M', 'A', 'S'];
     if data[start_i][start_j] != WORD[0] {
         return 0;

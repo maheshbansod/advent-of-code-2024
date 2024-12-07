@@ -48,10 +48,10 @@ impl<'a> Tokenizer<'a> {
     fn expect_number(&mut self) -> Option<u32> {
         let mut n = String::new();
         let it_clone = self.chars.clone();
-        let rest_num = it_clone.take_while(|c| c.is_digit(10)).collect::<String>();
+        let rest_num = it_clone.take_while(|c| c.is_ascii_digit()).collect::<String>();
         n.push_str(&rest_num);
 
-        if n.len() == 0 {
+        if n.is_empty() {
             return None;
         }
 
@@ -75,7 +75,7 @@ impl<'a> Tokenizer<'a> {
             return None;
         }
         self.chars = it_clone;
-        return Some(());
+        Some(())
     }
 
     fn match_mul(&mut self) -> Option<Token> {
@@ -85,7 +85,7 @@ impl<'a> Tokenizer<'a> {
         self.expect_next(',')?;
         let b = self.expect_number()?;
         self.expect_next(')')?;
-        return Some(Token::Mul(a, b));
+        Some(Token::Mul(a, b))
     }
 
     fn match_conditional(&mut self) -> Option<Token> {
@@ -94,7 +94,7 @@ impl<'a> Tokenizer<'a> {
         } else if self.expect_string("o()").is_some() {
             return Some(Token::Do);
         }
-        return None;
+        None
     }
 
     fn expect_next(&mut self, c: char) -> Option<()> {

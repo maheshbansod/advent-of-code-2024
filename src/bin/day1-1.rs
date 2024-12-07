@@ -16,7 +16,7 @@ fn main() -> io::Result<()> {
     list2.sort();
     let total_distance: u32 = list1
         .into_iter()
-        .zip(list2.into_iter())
+        .zip(list2)
         .map(|(a, b)| a.abs_diff(b))
         .sum();
     println!("{total_distance}");

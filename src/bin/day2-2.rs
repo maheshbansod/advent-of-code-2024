@@ -26,21 +26,21 @@ fn main() {
             let mut dampener_mode = DMode::Available;
             let first = levels.next().unwrap().parse::<u32>().unwrap();
             let second = levels.next().unwrap().parse::<u32>().unwrap();
-            let mut levels_dir = levels.clone();
+            let levels_dir = levels.clone();
             let mut previous_level = second;
             let mut increasing_count = if get_direction(first, second) == Direction::Increasing {
                 1
             } else {
                 -1
             };
-            while let Some(level) = levels_dir.next() {
+            for level in levels_dir {
                 let level = level.parse::<u32>().unwrap();
                 if get_direction(previous_level, level) == Direction::Increasing {
                     increasing_count += 1;
                 } else {
                     increasing_count -= 1;
                 }
-                if increasing_count > 2 || increasing_count < -2 {
+                if !(-2..=2).contains(&increasing_count) {
                     break;
                 }
                 previous_level = level;
@@ -116,7 +116,7 @@ fn is_level_pair_safe(levels: (u32, u32), direction: &Direction) -> bool {
         return false;
     }
     let diff = levels.1.abs_diff(levels.0);
-    !(diff < 1 || diff > 3)
+    (1..=3).contains(&diff)
 }
 
 #[derive(PartialEq)]

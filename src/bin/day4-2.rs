@@ -24,7 +24,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn count_x_mas_at(data: &Vec<Vec<char>>, start_i: usize, start_j: usize) -> usize {
+fn count_x_mas_at(data: &[Vec<char>], start_i: usize, start_j: usize) -> usize {
     if data[start_i][start_j] != 'A' {
         return 0;
     }
@@ -46,5 +46,5 @@ fn count_x_mas_at(data: &Vec<Vec<char>>, start_i: usize, start_j: usize) -> usiz
         return 0;
     }
 
-    return 1;
+    1
 }

@@ -11,7 +11,7 @@ fn main() -> MainResult {
 
     let (rules, updates) = data.split_once("\n\n").unwrap();
 
-    let rules = generate_rules(&rules);
+    let rules = generate_rules(rules);
     let mut valid_mids = vec![];
 
     for update in updates.lines() {
