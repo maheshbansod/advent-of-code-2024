@@ -197,7 +197,7 @@ impl Guard {
         let mut covered = vec![];
         let next_pos = self.next_step();
         let diff = (
-            next_pos.0 as i32 - self.position.x as i32,
+            next_pos.0 - self.position.x as i32,
             next_pos.1 - self.position.y as i32,
         );
         loop {

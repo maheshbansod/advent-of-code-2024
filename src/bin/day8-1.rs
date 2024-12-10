@@ -12,18 +12,14 @@ fn main() -> MainResult {
         .collect::<Vec<Vec<_>>>();
 
     let mut frequency_nodes = Vec::new();
-    for i in 0..data.len() {
-        for j in 0..data[i].len() {
-            if data[i][j] == '.' {
+    for (i, row) in data.iter().enumerate() {
+        for (j, d) in row.iter().enumerate() {
+            if *d == '.' {
                 // empty space
             } else {
                 // filled with something
 
-                frequency_nodes.push(FreqNode {
-                    c: data[i][j],
-                    i,
-                    j,
-                });
+                frequency_nodes.push(FreqNode { c: *d, i, j });
             }
         }
     }
@@ -36,7 +32,7 @@ fn main() -> MainResult {
             let diff_j = similar_node.j as isize - node.j as isize;
             if node.i >= diff_i {
                 let an1_i = node.i - diff_i;
-                let an1_j = node.j as isize - diff_j as isize;
+                let an1_j = node.j as isize - diff_j;
                 if !is_oob(an1_i, an1_j, &data) {
                     // println!("ufound an at {an1_i},{an1_j}");
                     s.insert(FreqNode {
@@ -47,7 +43,7 @@ fn main() -> MainResult {
                 }
             }
             let an2_i = similar_node.i + diff_i;
-            let an2_j = similar_node.j as isize + diff_j as isize;
+            let an2_j = similar_node.j as isize + diff_j;
             if is_oob(an2_i, an2_j, &data) {
                 continue;
             }
