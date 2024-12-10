@@ -1,4 +1,4 @@
-use std::{collections::HashSet, fs};
+use std::fs;
 
 use aoc2024::{get_input_file, MainResult};
 
@@ -36,7 +36,7 @@ fn main() -> MainResult {
 
     let mut sum = 0;
     for zero in zeroes {
-        let score = trailhead_score(zero, &data, &nines);
+        let score = trailhead_rating(zero, &data);
         println!("for {zero:?} : {score}");
         sum += score;
     }
@@ -48,21 +48,13 @@ type Node = (usize, usize);
 
 type Data<'a> = &'a [Vec<u8>];
 
-fn trailhead_score(zero: Node, data: &[Vec<u8>], nines: &[Node]) -> usize {
+fn trailhead_rating(zero: Node, data: &[Vec<u8>]) -> usize {
     let mut to_visit = vec![zero];
-    let mut visited_nines = HashSet::<Node>::new();
-    let mut visited_nodes = HashSet::<Node>::new();
     let mut nine_visited_len = 0;
     while let Some((i, j)) = to_visit.pop() {
-        visited_nodes.insert((i, j));
-        if data[i][j] == 9 && !visited_nines.contains(&(i, j)) {
-            visited_nines.insert((i, j));
+        if data[i][j] == 9 {
             nine_visited_len += 1;
-            if nine_visited_len >= nines.len() {
-                // all nines are done
-                return nine_visited_len;
-            }
-        };
+        }
         let directions = [
             Direction::Up,
             Direction::Down,
@@ -71,10 +63,11 @@ fn trailhead_score(zero: Node, data: &[Vec<u8>], nines: &[Node]) -> usize {
         ];
         for direction in directions {
             if let Some(next_pos) = get_dir_moved(direction, (i, j), &data) {
-                if !visited_nodes.contains(&next_pos) && {
+                let should_visit = {
                     let (ni, nj) = next_pos;
                     data[i][j] < data[ni][nj] && data[ni][nj] - data[i][j] == 1
-                } {
+                };
+                if should_visit {
                     to_visit.push(next_pos);
                 }
             }
