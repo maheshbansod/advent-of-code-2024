@@ -8,9 +8,6 @@ pub fn egcd<T>(a: T, b: T) -> (T, T, T)
 where
     T: Integer + Copy,
 {
-    // if a < b {
-    //     return egcd(b, a);
-    // }
     if b == T::zero() {
         (a, T::one(), T::zero())
     } else {
