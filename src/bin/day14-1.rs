@@ -1,4 +1,4 @@
-use std::fs;
+use std::{cmp::Ordering, fs};
 
 use aoc2024::{get_input_file, MainResult};
 
@@ -36,24 +36,22 @@ fn main() -> MainResult {
             };
             let xmid = grid_width / 2;
             let ymid = grid_height / 2;
-            let q = if new_x < xmid {
-                if new_y < ymid {
-                    0
-                } else if new_y > ymid {
-                    2
-                } else {
-                    4 // represents mid
+            let q = match new_x.cmp(&xmid) {
+                Ordering::Less => {
+                    match new_y.cmp(&ymid) {
+                        Ordering::Less => 0,
+                        Ordering::Greater => 2,
+                        Ordering::Equal => 4, // represents mid
+                    }
                 }
-            } else if new_x > xmid {
-                if new_y < ymid {
-                    1
-                } else if new_y > ymid {
-                    3
-                } else {
-                    4
+                Ordering::Greater => {
+                    match new_y.cmp(&ymid) {
+                        Ordering::Less => 1,
+                        Ordering::Greater => 3,
+                        Ordering::Equal => 4, // represents mid
+                    }
                 }
-            } else {
-                4
+                Ordering::Equal => 4,
             };
             (new_x, new_y, q)
         })
