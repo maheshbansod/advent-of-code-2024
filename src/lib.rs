@@ -1,3 +1,5 @@
+pub mod math;
+
 use std::error::Error;
 
 pub fn get_input_file(day: u32, use_test: bool) -> String {
