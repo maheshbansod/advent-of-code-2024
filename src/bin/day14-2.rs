@@ -57,7 +57,7 @@ fn main() -> MainResult {
             if match_count >= 25 {
                 this_is_it = true;
             }
-            print!("{counter} {i}\n");
+            println!("{counter} {i}");
         }
         if this_is_it {
             panic!("is this it!!!");

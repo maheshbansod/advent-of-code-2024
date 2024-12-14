@@ -16,8 +16,7 @@ fn main() -> MainResult {
             if visited.contains(&(i, j)) {
                 continue;
             }
-            let mut to_visit = Vec::new();
-            to_visit.push((i, j));
+            let mut to_visit = vec![(i, j)];
             let mut fence_area = 0;
             let mut fence_havers = HashSet::new();
             while !to_visit.is_empty() {
@@ -32,7 +31,7 @@ fn main() -> MainResult {
                     for n in neighbours {
                         let (direction, n) = n;
                         if let Some((ni, nj)) = n {
-                            if let Some(nd) = data.get(ni).map(|row| row.get(nj)).flatten() {
+                            if let Some(nd) = data.get(ni).and_then(|row| row.get(nj)) {
                                 if nd == region_head {
                                     if !visited.contains(&(ni, nj)) {
                                         next_visit.push((ni, nj));

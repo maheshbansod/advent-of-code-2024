@@ -29,7 +29,7 @@ fn main() -> MainResult {
                 let neighbours = get_neighbours(pi, pj);
                 for n in neighbours {
                     if let Some((ni, nj)) = n {
-                        if let Some(nd) = data.get(ni).map(|row| row.get(nj)).flatten() {
+                        if let Some(nd) = data.get(ni).and_then(|row| row.get(nj)) {
                             if nd == region_head {
                                 if !visited.contains(&(ni, nj)) {
                                     to_visit.push((ni, nj));
