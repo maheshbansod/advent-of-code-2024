@@ -1,6 +1,4 @@
-use std::ops::{Div, Rem, Sub};
-
-use num::{One, Zero};
+use num::Integer;
 
 /// Extended euclidian algorithm for finding gcd
 /// and a particular solution of adiophantine equation.
@@ -8,13 +6,7 @@ use num::{One, Zero};
 /// **NOTE: It is assumed that a > b**
 pub fn egcd<T>(a: T, b: T) -> (T, T, T)
 where
-    T: Div<Output = T>
-        + std::cmp::PartialEq<T>
-        + Rem<Output = T>
-        + Zero
-        + One
-        + Sub<Output = T>
-        + Copy,
+    T: Integer + Copy,
 {
     // if a < b {
     //     return egcd(b, a);
