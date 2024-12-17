@@ -1,3 +1,4 @@
+pub mod maps;
 pub mod math;
 
 use std::error::Error;
