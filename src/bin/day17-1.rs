@@ -68,12 +68,12 @@ impl Runner {
             Instruction::Adv => {
                 let operand = self.as_combo(operand);
                 let a = self.register_a_mut();
-                *a = *a >> operand;
+                *a >>= operand;
                 self.ip + 2
             }
             Instruction::Bxl => {
                 let b = self.register_b_mut();
-                *b = *b ^ operand as u64;
+                *b ^= operand as u64;
                 self.ip + 2
             }
             Instruction::Bst => {
@@ -93,7 +93,7 @@ impl Runner {
             Instruction::Bxc => {
                 let c = self.register_c();
                 let b = self.register_b_mut();
-                *b = *b ^ c;
+                *b ^= c;
                 self.ip + 2
             }
             Instruction::Out => {

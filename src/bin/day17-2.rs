@@ -88,7 +88,7 @@ impl Runner {
                 let operand = self.as_combo(operand);
                 let a = self.register_a_mut();
                 // println!("adv: {a} >> {operand}");
-                *a = *a >> operand;
+                *a >>= operand;
                 self.ip + 2
             }
             Instruction::Bxl => {
@@ -118,7 +118,7 @@ impl Runner {
                 let c = self.register_c();
                 let b = self.register_b_mut();
                 // println!("bxc: {b} ^ {c}");
-                *b = *b ^ c;
+                *b ^= c;
                 self.ip + 2
             }
             Instruction::Out => {

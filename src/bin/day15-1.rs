@@ -105,14 +105,13 @@ fn main() -> MainResult {
     let sum: usize = grid
         .iter()
         .enumerate()
-        .map(|(i, row)| {
+        .flat_map(|(i, row)| {
             row.iter()
                 .enumerate()
                 .filter(|&(_, c)| *c == 'O')
                 .map(|(j, _)| i * 100 + j)
                 .collect::<Vec<_>>()
         })
-        .flatten()
         .sum();
     println!("sum: {sum}");
 

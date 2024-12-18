@@ -64,7 +64,7 @@ impl<T: Copy + PartialEq> Grid<T> {
         self.data.iter().enumerate().find_map(|(i, row)| {
             row.iter()
                 .enumerate()
-                .find_map(|(j, c)| (*c == needle).then(|| (i, j)))
+                .find_map(|(j, c)| (*c == needle).then_some((i, j)))
         })
     }
 }
