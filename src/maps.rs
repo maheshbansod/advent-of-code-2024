@@ -7,6 +7,28 @@ pub enum Direction {
 }
 
 impl Direction {
+    pub const fn move_pos_checked(&self, next_pos: Coord) -> Option<Coord> {
+        let (i, j) = next_pos;
+        match self {
+            Direction::Up => {
+                if i > 0 {
+                    Some((i - 1, j))
+                } else {
+                    None
+                }
+            }
+            Direction::Down => Some((i + 1, j)),
+            Direction::Left => {
+                if j > 0 {
+                    Some((i, j - 1))
+                } else {
+                    None
+                }
+            }
+            Direction::Right => Some((i, j + 1)),
+        }
+    }
+
     pub const fn move_pos(&self, next_pos: Coord) -> Coord {
         let (i, j) = next_pos;
         match self {
@@ -67,4 +89,8 @@ impl<T: Copy + PartialEq> Grid<T> {
                 .find_map(|(j, c)| (*c == needle).then_some((i, j)))
         })
     }
+}
+
+pub fn is_out_of_bounds(pos: Coord, ilim: usize, jlim: usize) -> bool {
+    pos.0 >= ilim || pos.1 >= jlim
 }
