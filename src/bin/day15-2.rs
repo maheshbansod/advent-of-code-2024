@@ -1,4 +1,4 @@
-use std::{collections::HashSet, fs, thread, time::Duration};
+use std::{collections::HashSet, fs};
 
 use aoc2024::{get_input_file, MainResult};
 
@@ -11,12 +11,11 @@ fn main() -> MainResult {
         .map(|line| {
             let line = line
                 .chars()
-                .map(|c| match c {
+                .flat_map(|c| match c {
                     'O' => ['[', ']'],
                     '@' => ['@', '.'],
                     c => [c, c],
                 })
-                .flatten()
                 .collect::<Vec<_>>();
 
             println!("l: {line:?}");
@@ -118,10 +117,8 @@ fn main() -> MainResult {
                                     // just shift till empty
                                     // space
                                     let (i, j) = pos_to_move;
-                                    let c = grid[i][j];
-                                    grid[i][j] = previous_char;
-                                    previous_char = c;
-                                    if c == '.' {
+                                    std::mem::swap(&mut grid[i][j], &mut previous_char);
+                                    if previous_char == '.' {
                                         break;
                                     }
                                     pos_to_move = m.direction.move_pos(pos_to_move);
@@ -147,14 +144,13 @@ fn main() -> MainResult {
     let sum: usize = grid
         .iter()
         .enumerate()
-        .map(|(i, row)| {
+        .flat_map(|(i, row)| {
             row.iter()
                 .enumerate()
                 .filter(|&(_, c)| *c == '[')
                 .map(|(j, _)| i * 100 + j)
                 .collect::<Vec<_>>()
         })
-        .flatten()
         .sum();
     println!("sum: {sum}");
 
@@ -193,7 +189,7 @@ type Coord = (usize, usize);
 fn move_walls_vertical(
     direction: Direction,
     starting_position: Coord,
-    grid: &mut Vec<Vec<char>>,
+    grid: &mut [Vec<char>],
 ) -> Coord {
     let mut to_moves = vec![];
     let mut to_checks = vec![starting_position];
@@ -231,5 +227,5 @@ fn move_walls_vertical(
     for (i, j) in leave_dot {
         grid[i][j] = '.';
     }
-    return direction.move_pos(starting_position);
+    direction.move_pos(starting_position)
 }
