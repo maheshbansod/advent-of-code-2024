@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 #[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 pub enum Direction {
     Up,
@@ -64,6 +66,7 @@ impl Direction {
 
 pub type Coord = (usize, usize);
 
+#[derive(Clone)]
 pub struct Grid<T: Copy> {
     data: Vec<Vec<T>>,
 }
@@ -77,16 +80,48 @@ impl<T: Copy> Grid<T> {
         self.data[p.0][p.1]
     }
 
+    pub fn at_mut(&mut self, p: Coord) -> &mut T {
+        &mut self.data[p.0][p.1]
+    }
+
     pub fn at_checked(&self, p: Coord) -> Option<&T> {
         self.data.get(p.0).and_then(|row| row.get(p.1))
     }
+
+    pub fn is_edge(&self, p: &Coord) -> bool {
+        p.0 == 0
+            || p.0 == self.data.len() - 1
+            || p.1 == 0
+            || self
+                .data
+                .first()
+                .map(|row| row.len() - 1 == p.1)
+                .is_none_or(|r| r)
+    }
 }
-impl<T: Copy + PartialEq> Grid<T> {
+impl<T: Copy + Display> Grid<T> {
+    pub fn pretty_print(&self) {
+        for row in self.data.iter() {
+            for c in row {
+                print!("{c}");
+            }
+            println!();
+        }
+    }
+}
+impl<'a, T: Copy + PartialEq> Grid<T> {
     pub fn find_position(&self, needle: T) -> Option<Coord> {
         self.data.iter().enumerate().find_map(|(i, row)| {
             row.iter()
                 .enumerate()
                 .find_map(|(j, c)| (*c == needle).then_some((i, j)))
+        })
+    }
+    pub fn find_all_positions(&'a self, needle: T) -> impl Iterator<Item = Coord> + 'a {
+        self.data.iter().enumerate().flat_map(move |(i, row)| {
+            row.iter()
+                .enumerate()
+                .filter_map(move |(j, c)| (*c == needle).then_some((i.clone(), j)))
         })
     }
 }
