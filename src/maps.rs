@@ -92,11 +92,7 @@ impl<T: Copy> Grid<T> {
         p.0 == 0
             || p.0 == self.data.len() - 1
             || p.1 == 0
-            || self
-                .data
-                .first()
-                .map(|row| row.len() - 1 == p.1)
-                .is_none_or(|r| r)
+            || self.data.first().is_none_or(|row| row.len() - 1 == p.1)
     }
 }
 impl<T: Copy + Display> Grid<T> {

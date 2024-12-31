@@ -1,7 +1,4 @@
-use std::{
-    collections::{HashMap, HashSet},
-    fs,
-};
+use std::{collections::HashMap, fs};
 
 use aoc2024::{
     get_input_file,
@@ -22,7 +19,7 @@ fn main() -> MainResult {
     let end_position = grid.find_position('E').unwrap();
 
     let mut finder = PathFinder::new(grid.clone(), end_position);
-    let original_len = finder.shortest_path_len(&start_position, 0).unwrap();
+    let original_len = finder.shortest_path_len(&start_position).unwrap();
 
     println!("shortest_path: {:?}", original_len);
 
@@ -35,7 +32,7 @@ fn main() -> MainResult {
             *wall = '.'; // remove the wall
             let mut finder = PathFinder::new(grid, end_position);
             let result = finder
-                .shortest_path_len(&start_position, 0)
+                .shortest_path_len(&start_position)
                 .map(|shortest_len| (wall_position, original_len - shortest_len));
             result
         })
@@ -64,7 +61,7 @@ impl PathFinder {
         Self { grid, end_position }
     }
 
-    fn shortest_path_len(&mut self, start_position: &Coord, so_far: usize) -> Option<usize> {
+    fn shortest_path_len(&mut self, start_position: &Coord) -> Option<usize> {
         // let cache = HashMap::new();
         let mut visited = HashMap::new();
         let end_position = self.end_position.clone();
